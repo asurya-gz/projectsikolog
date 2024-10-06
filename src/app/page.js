@@ -3,6 +3,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { FaRegSmileBeam, FaBell, FaThumbsUp } from "react-icons/fa";
+import Link from "next/link";
 
 export default function Home() {
   const sectionVariants = {
@@ -29,13 +30,15 @@ export default function Home() {
           Dapatkan pesan afirmasi positif harian untuk memulai harimu dengan
           semangat dan energi baru!
         </p>
-        <motion.button
-          className="bg-purple-600 text-white py-3 px-8 rounded-full hover:bg-purple-700 transition duration-300"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          Kirim Pesan Sekarang
-        </motion.button>
+        <Link href="/Login">
+          <motion.button
+            className="bg-purple-600 text-white py-3 px-8 rounded-full hover:bg-purple-700 transition duration-300"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Bergabung Dengan Kami
+          </motion.button>
+        </Link>
       </motion.header>
 
       <motion.section
