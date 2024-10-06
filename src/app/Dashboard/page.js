@@ -47,12 +47,12 @@ export default function Dashboard() {
 
       {/* Sidebar untuk tampilan seluler */}
       <div
-        className={`fixed inset-0 bg-yellow-400 bg-opacity-75 md:hidden transition-opacity duration-300 ${
+        className={`fixed inset-0 z-40 bg-yellow-400 bg-opacity-75 md:hidden transition-opacity duration-300 ${
           isSidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
       >
         <div
-          className={`fixed inset-y-0 right-0 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${
+          className={`fixed inset-y-0 right-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${
             isSidebarOpen ? "translate-x-0" : "translate-x-full"
           }`}
         >
