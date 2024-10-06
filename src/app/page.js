@@ -1,100 +1,98 @@
-import Image from "next/image";
+"use client";
+
+import React from "react";
+import { motion } from "framer-motion";
+import { FaRegSmileBeam, FaBell, FaThumbsUp } from "react-icons/fa";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const sectionVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8, ease: "easeInOut" },
+    },
+  };
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  return (
+    <div className="min-h-screen bg-gray-900 flex flex-col items-center justify-between px-6 lg:px-16 py-12">
+      <motion.header
+        className="text-center max-w-3xl"
+        initial="hidden"
+        animate="visible"
+        variants={sectionVariants}
+      >
+        <h1 className="text-4xl lg:text-6xl font-bold text-pink-400 mb-4">
+          Tingkatkan Moralmu dengan Afirmasi Positif
+        </h1>
+        <p className="text-lg lg:text-xl text-gray-300 mb-8">
+          Dapatkan pesan afirmasi positif harian untuk memulai harimu dengan
+          semangat dan energi baru!
+        </p>
+        <motion.button
+          className="bg-purple-600 text-white py-3 px-8 rounded-full hover:bg-purple-700 transition duration-300"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          Kirim Pesan Sekarang
+        </motion.button>
+      </motion.header>
+
+      <motion.section
+        className="mt-12 text-center"
+        initial="hidden"
+        animate="visible"
+        variants={sectionVariants}
+      >
+        <h2 className="text-3xl font-semibold text-pink-400 mb-6">
+          Manfaat Bergabung Dengan Kami
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <motion.div
+            className="bg-gray-800 rounded-lg p-6 flex flex-col items-center"
+            whileHover={{ scale: 1.05 }}
+            variants={sectionVariants}
           >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            <FaRegSmileBeam className="text-purple-500 text-5xl mb-4" />
+            <h3 className="text-2xl font-bold text-purple-500 mb-2">
+              Motivasi Harian
+            </h3>
+            <p className="text-gray-400 text-center">
+              Dapatkan afirmasi harian yang memotivasi dan membuat harimu lebih
+              baik.
+            </p>
+          </motion.div>
+          <motion.div
+            className="bg-gray-800 rounded-lg p-6 flex flex-col items-center"
+            whileHover={{ scale: 1.05 }}
+            variants={sectionVariants}
           >
-            Read our docs
-          </a>
+            <FaBell className="text-purple-500 text-5xl mb-4" />
+            <h3 className="text-2xl font-bold text-purple-500 mb-2">
+              Pengingat Positif
+            </h3>
+            <p className="text-gray-400 text-center">
+              Jadwal pengingat otomatis untuk meningkatkan mood kapan saja.
+            </p>
+          </motion.div>
+          <motion.div
+            className="bg-gray-800 rounded-lg p-6 flex flex-col items-center"
+            whileHover={{ scale: 1.05 }}
+            variants={sectionVariants}
+          >
+            <FaThumbsUp className="text-purple-500 text-5xl mb-4" />
+            <h3 className="text-2xl font-bold text-purple-500 mb-2">
+              Buang Fikiran Buruk
+            </h3>
+            <p className="text-gray-400 text-center">
+              Membuatmu lebih percaya kepada potensi diri sendiri.
+            </p>
+          </motion.div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      </motion.section>
+
+      <footer className="text-center text-gray-500 py-6">
+        © 2024 Afirmasi Positif. Dilindungi Hak Cipta
       </footer>
     </div>
   );
