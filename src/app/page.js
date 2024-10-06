@@ -1,6 +1,5 @@
 "use client";
 
-import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { FaRegSmileBeam, FaBell, FaThumbsUp } from "react-icons/fa";
 import Link from "next/link";
@@ -14,31 +13,6 @@ export default function Home() {
       transition: { duration: 0.8, ease: "easeInOut" },
     },
   };
-
-  // Fungsi untuk meminta izin notifikasi
-  const requestNotificationPermission = () => {
-    if (Notification.permission === "granted") {
-      // Izin sudah diberikan, kita bisa langsung mengirim notifikasi
-      console.log("Notifikasi sudah diizinkan.");
-    } else if (Notification.permission !== "denied") {
-      // Minta izin
-      Notification.requestPermission().then((permission) => {
-        if (permission === "granted") {
-          console.log("Izin notifikasi diberikan.");
-          // Anda bisa memanggil fungsi untuk mengirim notifikasi di sini
-        } else {
-          console.log("Izin notifikasi ditolak.");
-        }
-      });
-    } else {
-      console.log("Notifikasi tidak diizinkan.");
-    }
-  };
-
-  // Panggil fungsi saat komponen di-mount
-  useEffect(() => {
-    requestNotificationPermission();
-  }, []);
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-between px-6 lg:px-16 py-12">
