@@ -78,7 +78,7 @@ export default function Register() {
       {/* Tombol kembali di pojok kiri atas */}
       <button
         onClick={handleGoBack}
-        className="absolute top-4 left-4 text-gray-500 hover:text-gray-400 transition duration-300"
+        className="absolute top-4 left-4 text-gray-500 hover:text-gray-400 transition duration-300 pb-3"
       >
         <FaArrowLeft className="text-2xl" />
       </button>

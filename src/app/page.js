@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { FaRegSmileBeam, FaBell, FaThumbsUp } from "react-icons/fa";
 import Link from "next/link";
@@ -14,6 +14,31 @@ export default function Home() {
       transition: { duration: 0.8, ease: "easeInOut" },
     },
   };
+
+  // Fungsi untuk meminta izin notifikasi
+  const requestNotificationPermission = () => {
+    if (Notification.permission === "granted") {
+      // Izin sudah diberikan, kita bisa langsung mengirim notifikasi
+      console.log("Notifikasi sudah diizinkan.");
+    } else if (Notification.permission !== "denied") {
+      // Minta izin
+      Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+          console.log("Izin notifikasi diberikan.");
+          // Anda bisa memanggil fungsi untuk mengirim notifikasi di sini
+        } else {
+          console.log("Izin notifikasi ditolak.");
+        }
+      });
+    } else {
+      console.log("Notifikasi tidak diizinkan.");
+    }
+  };
+
+  // Panggil fungsi saat komponen di-mount
+  useEffect(() => {
+    requestNotificationPermission();
+  }, []);
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-between px-6 lg:px-16 py-12">
@@ -31,7 +56,9 @@ export default function Home() {
 
         <h1 className="text-4xl lg:text-6xl font-bold text-gray-800 mb-4">
           Tingkatkan Moralmu dengan Afirmasi Positif Dari{" "}
-          <span className="text-yellow-500">KataKitaMah!</span>
+          <span id="judulutama" className="text-yellow-500">
+            KataKitaMah!
+          </span>
         </h1>
         <p className="text-lg lg:text-xl text-gray-700 mb-8">
           Dapatkan pesan afirmasi positif harian untuk memulai harimu dengan
