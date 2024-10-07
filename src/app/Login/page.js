@@ -30,7 +30,7 @@ export default function Login() {
 
     try {
       const response = await axios.post(
-        "https://be-psi.up.railway.app:4000/users/login",
+        "https://be-psi.up.railway.app/users/login",
         {
           email,
           password,

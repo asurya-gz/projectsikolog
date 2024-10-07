@@ -78,7 +78,7 @@ export default function Register() {
       try {
         // Menggunakan Axios untuk mengirimkan permintaan POST
         const response = await axios.post(
-          "https://be-psi.up.railway.app:4000/users",
+          "https://be-psi.up.railway.app/users",
           userData
         );
 

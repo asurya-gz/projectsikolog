@@ -25,15 +25,12 @@ export default function Profile() {
       // Fetch data pengguna dari API
       const fetchUserData = async () => {
         try {
-          const response = await fetch(
-            "https://be-psi.up.railway.app:4000/users",
-            {
-              method: "GET",
-              headers: {
-                Authorization: `Bearer ${token}`, // Sertakan token untuk otorisasi
-              },
-            }
-          );
+          const response = await fetch("https://be-psi.up.railway.app/users", {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`, // Sertakan token untuk otorisasi
+            },
+          });
           const data = await response.json();
 
           // Pastikan data adalah array dan ambil elemen pertama
@@ -80,7 +77,7 @@ export default function Profile() {
     try {
       const token = Cookies.get("token");
       await axios.put(
-        "https://be-psi.up.railway.app:4000/users/change-password",
+        "https://be-psi.up.railway.app/users/change-password",
         { password: newPassword },
         {
           headers: {
