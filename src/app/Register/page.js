@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation"; // Untuk navigasi jika menggunakan 
 import { FaArrowLeft } from "react-icons/fa"; // Import ikon
 import { motion } from "framer-motion"; // Import Framer Motion
 import Link from "next/link";
+import axios from "axios"; // Impor Axios
 
 export default function Register() {
   const router = useRouter(); // Hook untuk navigasi
@@ -58,18 +59,34 @@ export default function Register() {
     visible: { opacity: 1, y: 0 }, // Kondisi akhir
   };
 
-  // Fungsi untuk menangani submit form
-  const handleSubmit = (e) => {
-    e.preventDefault(); // Mencegah perilaku default form
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
     if (password !== confirmPassword) {
-      setErrorMessage("Password tidak cocok."); // Set pesan kesalahan
-      setPasswordStrength(""); // Kosongkan kekuatan password jika tidak cocok
-      setIsPasswordMatch(false); // Set kesesuaian password ke false
+      setErrorMessage("Password tidak cocok.");
+      setPasswordStrength("");
+      setIsPasswordMatch(false);
     } else {
-      setErrorMessage(""); // Kosongkan pesan kesalahan jika password cocok
-      // Logika untuk mengirim data registrasi dapat ditambahkan di sini
-      console.log("Mendaftar dengan:", { password }); // Contoh output
+      setErrorMessage("");
+
+      const userData = {
+        username: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        password,
+      };
+
+      try {
+        // Menggunakan Axios untuk mengirimkan permintaan POST
+        const response = await axios.post(
+          "http://localhost:4000/users",
+          userData
+        );
+
+        console.log("Pengguna berhasil didaftarkan:", response.data);
+        router.push("/Login");
+      } catch (error) {
+        setErrorMessage(error.response?.data?.error || "Something went wrong");
+      }
     }
   };
 

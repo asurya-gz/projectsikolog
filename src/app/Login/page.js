@@ -1,12 +1,17 @@
 "use client";
-import React from "react";
+import React, { useState } from "react"; // Impor useState
 import { useRouter } from "next/navigation"; // Untuk navigasi jika menggunakan Next.js
 import { FaArrowLeft } from "react-icons/fa"; // Import ikon
 import { motion } from "framer-motion"; // Import Framer Motion
 import Link from "next/link";
+import axios from "axios"; // Import Axios
+import Cookies from "js-cookie"; // Import js-cookie untuk manajemen cookie
 
 export default function Login() {
   const router = useRouter(); // Hook untuk navigasi
+  const [email, setEmail] = useState(""); // State untuk email
+  const [password, setPassword] = useState(""); // State untuk password
+  const [errorMessage, setErrorMessage] = useState(""); // State untuk pesan error
 
   // Fungsi untuk kembali ke halaman utama
   const handleGoBack = () => {
@@ -17,6 +22,43 @@ export default function Login() {
   const boxAnimation = {
     hidden: { opacity: 0, y: -20 }, // Kondisi awal
     visible: { opacity: 1, y: 0 }, // Kondisi akhir
+  };
+
+  // Fungsi untuk meng-handle pengiriman formulir
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Mencegah reload halaman
+
+    try {
+      const response = await axios.post("http://localhost:4000/users/login", {
+        email,
+        password,
+      });
+
+      // Log seluruh response.data untuk melihat strukturnya
+      console.log("Response Data:", response.data);
+
+      // Simpan token dan userID di cookie jika ada
+      if (response.data.token) {
+        Cookies.set("token", response.data.token, { expires: 7 }); // Set cookie dengan durasi 7 hari
+        // Menyimpan user ID dari respons
+        const userID = response.data.user.id; // Mengambil user ID
+        Cookies.set("userID", userID, { expires: 7 }); // Set cookie dengan durasi 7 hari
+      } else {
+        console.error("Token tidak tersedia dalam respons.");
+      }
+
+      // Jika login berhasil, arahkan ke halaman dashboard
+      router.push("/Dashboard");
+    } catch (error) {
+      // Menangani kesalahan respons dan menampilkan pesan kesalahan
+      if (error.response) {
+        setErrorMessage(
+          error.response.data.message || "Email atau password salah."
+        ); // Jika ada respons dari server
+      } else {
+        setErrorMessage("Terjadi kesalahan. Silakan coba lagi."); // Jika tidak ada respons
+      }
+    }
   };
 
   return (
@@ -48,7 +90,14 @@ export default function Login() {
         <p className="text-gray-500 text-center">
           Masukkan detail akun Anda untuk melanjutkan
         </p>
-        <form className="space-y-4">
+
+        {/* Menampilkan pesan kesalahan jika ada */}
+        {errorMessage && (
+          <div className="text-red-500 text-center">{errorMessage}</div>
+        )}
+
+        <form className="space-y-4" onSubmit={handleSubmit}>
+          {/* Meng-handle submit */}
           <div>
             <label htmlFor="email" className="block text-gray-600 mb-2">
               Email
@@ -56,8 +105,11 @@ export default function Login() {
             <input
               id="email"
               type="email"
+              value={email} // Menggunakan state email
+              onChange={(e) => setEmail(e.target.value)} // Update state saat input berubah
               className="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-500"
               placeholder="Masukkan email"
+              required // Tambahkan required untuk validasi input
             />
           </div>
           <div>
@@ -67,8 +119,11 @@ export default function Login() {
             <input
               id="password"
               type="password"
+              value={password} // Menggunakan state password
+              onChange={(e) => setPassword(e.target.value)} // Update state saat input berubah
               className="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-500"
               placeholder="Masukkan password"
+              required // Tambahkan required untuk validasi input
             />
           </div>
           <div className="flex items-center justify-between pb-2">
@@ -83,14 +138,12 @@ export default function Login() {
               </label>
             </div>
           </div>
-          <Link href="/Dashboard">
-            <button
-              type="submit"
-              className="w-full bg-yellow-500 text-white py-2 rounded-lg hover:bg-yellow-600 transition duration-300"
-            >
-              Masuk
-            </button>
-          </Link>
+          <button
+            type="submit" // Hapus Link dan ubah ke button
+            className="w-full bg-yellow-500 text-white py-2 rounded-lg hover:bg-yellow-600 transition duration-300"
+          >
+            Masuk
+          </button>
         </form>
         <p className="text-center text-gray-600">
           Belum punya akun?{" "}

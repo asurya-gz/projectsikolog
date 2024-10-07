@@ -1,16 +1,71 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { FaBars, FaUser, FaSignOutAlt, FaTimes } from "react-icons/fa";
 import Link from "next/link";
 import MenuKata from "./MenuKata/page";
+import Cookies from "js-cookie";
+import axios from "axios"; // Import axios
 
 export default function Dashboard() {
+  const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Fungsi untuk toggle sidebar
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+
+  // Fungsi untuk meminta izin notifikasi
+  const requestNotificationPermission = async () => {
+    if (Notification.permission === "granted") {
+      console.log("Notifikasi sudah diizinkan.");
+    } else if (Notification.permission !== "denied") {
+      const permission = await Notification.requestPermission();
+      if (permission === "granted") {
+        console.log("Izin notifikasi diberikan.");
+      } else {
+        console.log("Izin notifikasi ditolak.");
+      }
+    } else {
+      console.log("Notifikasi tidak diizinkan.");
+    }
+  };
+
+  // Fungsi untuk mendaftar service worker
+  const registerServiceWorker = async () => {
+    if ("serviceWorker" in navigator) {
+      try {
+        const registration = await navigator.serviceWorker.register(
+          "/service-worker.js"
+        );
+        console.log("Service Worker terdaftar dengan sukses:", registration);
+      } catch (error) {
+        console.error("Gagal mendaftar Service Worker:", error);
+      }
+    }
+  };
+
+  // Panggil fungsi saat komponen di-mount
+  useEffect(() => {
+    const token = Cookies.get("token");
+    if (!token) {
+      router.push("/Login");
+    } else {
+      registerServiceWorker();
+      requestNotificationPermission();
+      setIsLoading(false);
+    }
+  }, [router]);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="spinner"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
@@ -18,12 +73,7 @@ export default function Dashboard() {
       <header className="flex justify-between items-center p-4 bg-yellow-400">
         <div className="flex items-center space-x-3">
           <img src="/logo.png" alt="Logo" className="w-10 h-10" />
-          <h1
-            id="judulutama"
-            className="text-xl font-bold text-white font-geist-sans"
-          >
-            KataKitaMah!
-          </h1>
+          <h1 className="text-xl font-bold text-white">KataKitaMah!</h1>
         </div>
         <div className="hidden md:flex items-center space-x-6 mx-4">
           <Link href="/Profile">

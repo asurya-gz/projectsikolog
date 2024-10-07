@@ -1,58 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaLightbulb, FaBullhorn, FaHeart, FaSmile } from "react-icons/fa";
-
-const affirmations = {
-  "Self-Confidence": {
-    quotes: [
-      "Kamu lebih hebat dari yang kamu pikirkan!",
-      "Nggak perlu jadi orang lain, kamu udah keren kok! 😎",
-      "Berhentilah meragukan diri sendiri. Mulailah dan wujudkan mimpimu!",
-      "You were born to shine🌟",
-      "Jangan bandingin diri sama orang lain, kamu unik dan spesial! 💖",
-    ],
-    description:
-      "Afirmasi untuk membangkitkan rasa percaya diri dan keberanian.",
-    message: "Ingat, kamu layak untuk meraih semua impianmu.",
-  },
-  "Motivation and Productivity": {
-    quotes: [
-      "Selalu ada peluang untuk jadi lebih baik, let’s make it happen! 🌟",
-      "Hasil besar datang dari kebiasaan kecil yang baik. Just do it!",
-      "Kerja kerasmu hari ini adalah kesuksesanmu esok.",
-      "Setiap langkah kecil membawa perubahan. Kamu hanya perlu memulainya!",
-      "Nggak ada yang instan, tapi kamu pasti bisa kalau berusaha! 💪✨️",
-      "Setiap rintangan itu kesempatan buat jadi lebih kuat. Tetap semangat‼ 💥",
-    ],
-    description: "Afirmasi untuk meningkatkan motivasi dan produktivitas.",
-    message: "Kamu punya potensi yang luar biasa!",
-  },
-  "Self-Compassion": {
-    quotes: [
-      "Setiap orang punya struggle, termasuk kamu. Treat yourself kindly. 🤗💛",
-      "It’s okay to feel down sometimes, jangan lupa beri dirimu ruang buat istirahat. 💖😌",
-      "Jangan terlalu keras sama diri sendiri, you did very well! 🌸✨️",
-      "Nggak masalah kalau nggak sempurna, yang penting kamu udah mencoba. 🌻💛",
-      "Mulai dengan memaafkan diri sendiri, kamu layak untuk damai dan bahagia. 🌿💕",
-    ],
-    description:
-      "Afirmasi untuk meningkatkan rasa kasih sayang terhadap diri sendiri.",
-    message: "Berikan dirimu cinta dan pengertian.",
-  },
-  "Self-Love": {
-    quotes: [
-      "Your value doesn’t depend on others, kamu cukup apa adanya.",
-      "Kamu layak dapet semua cinta dan kebahagiaan di dunia ini, termasuk dari dirimu sendiri.",
-      "Kamu berhak bahagia, dan itu bisa dimulai dari cinta ke diri sendiri.",
-      "Kamu berharga, nggak semua perlu validasi dari orang lain.",
-      "Luangkan waktu buat diri sendiri untuk recharge energimu. You deserve it!",
-      "Saat kamu mencintai dirimu sendiri, kamu mengajarkan dunia bagaimana cara mencintaimu.",
-      "Aku adalah sumber kekuatan dan cahaya dalam hidupku sendiri.",
-    ],
-    description: "Afirmasi untuk mencintai diri sendiri dan menghargai diri.",
-    message: "Kamu adalah yang terpenting dalam hidupmu!",
-  },
-};
+import axios from "axios";
+import Cookies from "js-cookie";
 
 const icons = {
   "Self-Confidence": <FaLightbulb size={32} className="text-yellow-500" />,
@@ -66,7 +16,58 @@ const icons = {
 export default function MenuKata() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTopic, setSelectedTopic] = useState("");
-  const [notificationInterval, setNotificationInterval] = useState(1); // Default interval 1 jam
+  const [notificationInterval, setNotificationInterval] = useState(1);
+  const [affirmations, setAffirmations] = useState({});
+  const [activeAffirmation, setActiveAffirmation] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true); // Mulai loading
+      try {
+        // Ambil affirmations
+        const responseAffirmations = await axios.get(
+          "http://localhost:4000/api/affirmations"
+        );
+
+        const formattedData = {};
+        responseAffirmations.data.forEach((item) => {
+          const quotesArray = Array.isArray(item.quotes) ? item.quotes : [];
+          formattedData[item.id] = {
+            title: item.title,
+            description: item.description,
+            quotes: quotesArray,
+            message: item.message,
+          };
+        });
+
+        setAffirmations(formattedData);
+
+        // Ambil activeAffirmation berdasarkan user ID
+        const userID = Cookies.get("userID");
+        const token = Cookies.get("token");
+
+        const responseActiveAffirmation = await axios.get(
+          `http://localhost:4000/api/user-affirmations?user_id=${userID}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (responseActiveAffirmation.data.length > 0) {
+          setActiveAffirmation(responseActiveAffirmation.data[0]);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false); // Hentikan loading setelah semua data berhasil dimuat
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const openModal = (topic) => {
     setSelectedTopic(topic);
@@ -81,37 +82,124 @@ export default function MenuKata() {
     setNotificationInterval(e.target.value);
   };
 
-  const sendMessage = () => {
-    alert(`Pesan: ${affirmations[selectedTopic].message}`);
+  const sendMessage = async () => {
+    if (!selectedTopic || !affirmations[selectedTopic]) {
+      alert("Pilih afirmasi yang valid.");
+      return;
+    }
+
+    try {
+      const affirmationID = selectedTopic; // Ambil ID afirmasi dari selectedTopic
+      const userID = Cookies.get("userID");
+      const token = Cookies.get("token");
+
+      const response = await axios.post(
+        "http://localhost:4000/api/user-affirmations",
+        {
+          user_id: userID,
+          affirmation_id: affirmationID,
+          notification_interval: notificationInterval,
+          created_at: new Date().toISOString(),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      alert(`Pesan: ${affirmations[selectedTopic].message}`);
+      console.log("Response dari server:", response.data);
+      setActiveAffirmation(response.data);
+      closeModal();
+
+      // Reload halaman setelah menyimpan
+      window.location.reload(); // Tambahkan ini untuk refresh halaman
+    } catch (error) {
+      console.error("Error mengisi tabel user_affirmations:", error);
+      alert("Terjadi kesalahan saat mengirim data. Silakan coba lagi.");
+    }
   };
+
+  const cancelAffirmation = async () => {
+    try {
+      const userID = Cookies.get("userID");
+      const response = await axios.delete(
+        `http://localhost:4000/api/user-affirmations/${activeAffirmation.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+        }
+      );
+
+      alert("Afirmasi dibatalkan.");
+      setActiveAffirmation(null); // Reset active affirmation
+      closeModal(); // Tutup modal setelah pembatalan
+    } catch (error) {
+      console.error("Error cancelling affirmation:", error);
+    }
+  };
+
+  if (loading) {
+    return <div className="text-center">Loading...</div>;
+  }
 
   return (
     <div className="max-w-6xl mx-auto p-6">
+      {activeAffirmation && (
+        <div className="mb-6 p-4 bg-yellow-100 border border-yellow-300 rounded-lg">
+          <h3 className="text-lg font-semibold">Afirmasi Aktif:</h3>
+          {affirmations[activeAffirmation.affirmation_id] ? (
+            <div>
+              <h4 className="font-bold">
+                {affirmations[activeAffirmation.affirmation_id].title}
+              </h4>
+              <p>
+                {affirmations[activeAffirmation.affirmation_id].description}
+              </p>
+            </div>
+          ) : (
+            <p>Afirmasi tidak ditemukan.</p>
+          )}
+          <button
+            onClick={cancelAffirmation}
+            className="mt-2 bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition duration-200"
+          >
+            Batalkan Afirmasi
+          </button>
+        </div>
+      )}
       <h2 className="text-3xl font-bold mb-8 text-gray-800 text-center">
         Pilih Jenis Afirmasi Yang Akan Diterapkan
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {Object.keys(affirmations).map((topic) => (
+        {Object.keys(affirmations).map((id) => (
           <div
-            key={topic}
-            className="p-6 bg-white border border-gray-200 rounded-lg shadow-lg cursor-pointer hover:bg-yellow-100 transition-transform transform hover:scale-105 flex flex-col items-center"
-            onClick={() => openModal(topic)}
+            key={id}
+            className={`p-6 bg-white border border-gray-200 rounded-lg shadow-lg transition-transform transform ${
+              activeAffirmation && activeAffirmation.affirmation_id === id
+                ? "cursor-default opacity-50"
+                : "cursor-pointer hover:bg-yellow-100"
+            }`}
+            onClick={() => (activeAffirmation ? null : openModal(id))}
           >
-            <div className="mb-3">{icons[topic]}</div>
+            <div className="mb-3">{icons[affirmations[id].title]}</div>
             <h3 className="text-lg font-semibold text-gray-800 text-center">
-              {topic}
+              {affirmations[id].title}
             </h3>
             <p className="text-gray-600 text-center mt-2">
-              {`Afirmasi untuk ${topic.toLowerCase()}. Temukan inspirasi dan semangat!`}
+              {`Afirmasi untuk ${affirmations[
+                id
+              ].title.toLowerCase()}. Temukan inspirasi dan semangat!`}
             </p>
           </div>
         ))}
       </div>
 
-      {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center">
-          <div className="bg-white p-8 rounded-lg shadow-lg w-11/12 md:w-1/2">
+          <div className="bg-white p-8 rounded-lg shadow-lg w-11/12 md:w-1/2 max-h-[65vh] overflow-y-auto">
             <div className="flex items-center mb-4">
               {icons[selectedTopic]}
               <h3 className="text-xl font-bold ml-2 text-gray-800">
@@ -121,16 +209,22 @@ export default function MenuKata() {
             <p className="mb-4 text-gray-600">
               {affirmations[selectedTopic].description}
             </p>
+
             <ul className="list-disc list-inside space-y-2 mb-4">
-              {affirmations[selectedTopic].quotes.map((quote, index) => (
-                <li key={index} className="text-gray-700">
-                  {quote}
-                </li>
-              ))}
+              {affirmations[selectedTopic].quotes.length > 0 ? (
+                affirmations[selectedTopic].quotes.map((quote, index) => (
+                  <li key={index} className="text-gray-700">
+                    {quote}
+                  </li>
+                ))
+              ) : (
+                <li className="text-gray-700">Tidak ada kutipan tersedia.</li>
+              )}
             </ul>
+
             <div className="mb-4">
               <label className="block mb-2 text-gray-700">
-                Atur notifikasi setiap (jam):
+                Atur notifikasi setiap (menit):
               </label>
               <input
                 type="number"
@@ -140,21 +234,24 @@ export default function MenuKata() {
                 className="border border-gray-300 rounded-md p-2 w-full"
               />
             </div>
+
             <p className="text-gray-700 mb-4">
               {affirmations[selectedTopic].message}
             </p>
-            <button
-              onClick={closeModal}
-              className="bg-yellow-500 text-white py-2 px-4 rounded-md hover:bg-yellow-600 transition duration-200 mr-2"
-            >
-              Tutup
-            </button>
-            <button
-              onClick={sendMessage}
-              className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-200"
-            >
-              Pilih Afirmasi
-            </button>
+            <div className="flex justify-between">
+              <button
+                onClick={sendMessage}
+                className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-200"
+              >
+                Kirim Afirmasi
+              </button>
+              <button
+                onClick={closeModal}
+                className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition duration-200"
+              >
+                Tutup
+              </button>
+            </div>
           </div>
         </div>
       )}

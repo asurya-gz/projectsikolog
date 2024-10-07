@@ -1,6 +1,7 @@
 "use client"; // Jika menggunakan client-side routing
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation"; // Import useRouter untuk navigasi
+import Cookies from "js-cookie"; // Import js-cookie untuk manajemen cookie
 
 export default function Logout() {
   const router = useRouter();
@@ -8,10 +9,10 @@ export default function Logout() {
   useEffect(() => {
     // Fungsi untuk logout
     const handleLogout = () => {
-      // Di sini bisa ditambahkan logika untuk menghapus token atau sesi pengguna
-      // Contoh: localStorage.removeItem("token");
+      // Menghapus token dari cookie
+      Cookies.remove("token");
 
-      // Arahkan ke halaman utama
+      // Arahkan ke halaman utama setelah logout
       router.push("/"); // Mengarahkan ke halaman utama
     };
 

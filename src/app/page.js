@@ -15,31 +15,6 @@ export default function Home() {
     },
   };
 
-  // Fungsi untuk meminta izin notifikasi
-  const requestNotificationPermission = () => {
-    if (Notification.permission === "granted") {
-      // Izin sudah diberikan, kita bisa langsung mengirim notifikasi
-      console.log("Notifikasi sudah diizinkan.");
-    } else if (Notification.permission !== "denied") {
-      // Minta izin
-      Notification.requestPermission().then((permission) => {
-        if (permission === "granted") {
-          console.log("Izin notifikasi diberikan.");
-          // Anda bisa memanggil fungsi untuk mengirim notifikasi di sini
-        } else {
-          console.log("Izin notifikasi ditolak.");
-        }
-      });
-    } else {
-      console.log("Notifikasi tidak diizinkan.");
-    }
-  };
-
-  // Panggil fungsi saat komponen di-mount
-  useEffect(() => {
-    requestNotificationPermission();
-  }, []);
-
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-between px-6 lg:px-16 py-12">
       {/* Header */}
@@ -49,21 +24,25 @@ export default function Home() {
         animate="visible"
         variants={sectionVariants}
       >
-        {/* Tempat untuk Logo */}
-        <div className="flex justify-center mb-6">
-          <img src="/logo.png" alt="Logo" className="w-20 h-20" />
-        </div>
-
         <h1 className="text-4xl lg:text-6xl font-bold text-gray-800 mb-4">
           Tingkatkan Moralmu dengan Afirmasi Positif Dari{" "}
           <span id="judulutama" className="text-yellow-500">
             KataKitaMah!
           </span>
         </h1>
-        <p className="text-lg lg:text-xl text-gray-700 mb-8">
+        <p className="text-lg lg:text-xl text-gray-700">
           Dapatkan pesan afirmasi positif harian untuk memulai harimu dengan
           semangat dan energi baru!
         </p>
+        {/* Tempat untuk Logo */}
+        <div className="flex justify-center">
+          <img
+            src="/logo.png"
+            alt="Logo"
+            style={{ width: "250px", height: "250px" }}
+          />
+        </div>
+
         <Link href="/Login">
           <motion.button
             className="bg-yellow-500 text-white py-3 px-8 rounded-full hover:bg-yellow-600 transition duration-300"
