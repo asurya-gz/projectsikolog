@@ -29,10 +29,13 @@ export default function Login() {
     e.preventDefault(); // Mencegah reload halaman
 
     try {
-      const response = await axios.post("http://localhost:4000/users/login", {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        "https://be-psi.up.railway.app:4000/users/login",
+        {
+          email,
+          password,
+        }
+      );
 
       // Log seluruh response.data untuk melihat strukturnya
       console.log("Response Data:", response.data);

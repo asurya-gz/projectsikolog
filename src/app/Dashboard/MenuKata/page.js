@@ -27,7 +27,7 @@ export default function MenuKata() {
       try {
         // Ambil affirmations
         const responseAffirmations = await axios.get(
-          "http://localhost:4000/api/affirmations"
+          "https://be-psi.up.railway.app:4000/api/affirmations"
         );
 
         const formattedData = {};
@@ -48,7 +48,7 @@ export default function MenuKata() {
         const token = Cookies.get("token");
 
         const responseActiveAffirmation = await axios.get(
-          `http://localhost:4000/api/user-affirmations?user_id=${userID}`,
+          `https://be-psi.up.railway.app:4000/api/user-affirmations?user_id=${userID}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -94,7 +94,7 @@ export default function MenuKata() {
       const token = Cookies.get("token");
 
       const response = await axios.post(
-        "http://localhost:4000/api/user-affirmations",
+        "https://be-psi.up.railway.app:4000/api/user-affirmations",
         {
           user_id: userID,
           affirmation_id: affirmationID,
@@ -125,7 +125,7 @@ export default function MenuKata() {
     try {
       const userID = Cookies.get("userID");
       const response = await axios.delete(
-        `http://localhost:4000/api/user-affirmations/${activeAffirmation.id}`,
+        `https://be-psi.up.railway.app:4000/api/user-affirmations/${activeAffirmation.id}`,
         {
           headers: {
             Authorization: `Bearer ${Cookies.get("token")}`,
