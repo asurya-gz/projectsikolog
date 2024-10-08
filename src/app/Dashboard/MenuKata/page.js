@@ -20,6 +20,12 @@ export default function MenuKata() {
   const [affirmations, setAffirmations] = useState({});
   const [activeAffirmation, setActiveAffirmation] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [selectedInterval, setSelectedInterval] = useState(24); // default 1 hari
+
+  const handleIntervalSelect = (hours) => {
+    setNotificationInterval(hours); // Mengupdate interval notifikasi
+    setSelectedInterval(hours); // Mengupdate state yang menandakan interval yang dipilih
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -224,6 +230,41 @@ export default function MenuKata() {
 
             <div className="mb-4">
               <label className="block mb-2 text-gray-700">
+                Pilih interval notifikasi:
+              </label>
+              <div className="flex space-x-4 mb-2">
+                <button
+                  onClick={() => handleIntervalSelect(24)}
+                  className={`py-2 px-4 rounded-md ${
+                    selectedInterval === 24
+                      ? "bg-yellow-500 text-white"
+                      : "bg-gray-200 text-gray-700"
+                  } hover:bg-yellow-400 transition duration-200`}
+                >
+                  1 Hari
+                </button>
+                <button
+                  onClick={() => handleIntervalSelect(72)}
+                  className={`py-2 px-4 rounded-md ${
+                    selectedInterval === 72
+                      ? "bg-yellow-500 text-white"
+                      : "bg-gray-200 text-gray-700"
+                  } hover:bg-yellow-400 transition duration-200`}
+                >
+                  3 Hari
+                </button>
+                <button
+                  onClick={() => handleIntervalSelect(168)}
+                  className={`py-2 px-4 rounded-md ${
+                    selectedInterval === 168
+                      ? "bg-yellow-500 text-white"
+                      : "bg-gray-200 text-gray-700"
+                  } hover:bg-yellow-400 transition duration-200`}
+                >
+                  1 Minggu
+                </button>
+              </div>
+              <label className="block mb-2 text-gray-700">
                 Atur notifikasi setiap (jam):
               </label>
               <input
@@ -232,6 +273,7 @@ export default function MenuKata() {
                 value={notificationInterval}
                 onChange={handleIntervalChange}
                 className="border border-gray-300 rounded-md p-2 w-full"
+                readOnly // Menandakan bahwa input ini hanya dapat diisi melalui pilihan di atas
               />
             </div>
 
