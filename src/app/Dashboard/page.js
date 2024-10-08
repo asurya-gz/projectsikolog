@@ -6,55 +6,24 @@ import Link from "next/link";
 import MenuKata from "./MenuKata/page";
 import Cookies from "js-cookie";
 import axios from "axios"; // Import axios
+import { useFirebaseMessaging } from "../firebase/firebase";
 
 export default function Dashboard() {
   const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Fungsi untuk toggle sidebar
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  // Fungsi untuk meminta izin notifikasi
-  const requestNotificationPermission = async () => {
-    if (Notification.permission === "granted") {
-      console.log("Notifikasi sudah diizinkan.");
-    } else if (Notification.permission !== "denied") {
-      const permission = await Notification.requestPermission();
-      if (permission === "granted") {
-        console.log("Izin notifikasi diberikan.");
-      } else {
-        console.log("Izin notifikasi ditolak.");
-      }
-    } else {
-      console.log("Notifikasi tidak diizinkan.");
-    }
-  };
+  useFirebaseMessaging(); // Memanggil hook FCM
 
-  // Fungsi untuk mendaftar service worker
-  const registerServiceWorker = async () => {
-    if ("serviceWorker" in navigator) {
-      try {
-        const registration = await navigator.serviceWorker.register(
-          "/service-worker.js"
-        );
-        console.log("Service Worker terdaftar dengan sukses:", registration);
-      } catch (error) {
-        console.error("Gagal mendaftar Service Worker:", error);
-      }
-    }
-  };
-
-  // Panggil fungsi saat komponen di-mount
   useEffect(() => {
     const token = Cookies.get("token");
     if (!token) {
       router.push("/Login");
     } else {
-      registerServiceWorker();
-      requestNotificationPermission();
       setIsLoading(false);
     }
   }, [router]);

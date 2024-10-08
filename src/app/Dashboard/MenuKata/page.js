@@ -98,7 +98,7 @@ export default function MenuKata() {
         {
           user_id: userID,
           affirmation_id: affirmationID,
-          notification_interval: notificationInterval,
+          notification_interval: notificationInterval - 1,
           created_at: new Date().toISOString(),
         },
         {
