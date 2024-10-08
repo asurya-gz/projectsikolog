@@ -273,7 +273,6 @@ export default function MenuKata() {
                 value={notificationInterval}
                 onChange={handleIntervalChange}
                 className="border border-gray-300 rounded-md p-2 w-full"
-                readOnly // Menandakan bahwa input ini hanya dapat diisi melalui pilihan di atas
               />
             </div>
 
