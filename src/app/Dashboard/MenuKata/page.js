@@ -98,7 +98,7 @@ export default function MenuKata() {
         {
           user_id: userID,
           affirmation_id: affirmationID,
-          notification_interval: notificationInterval - 1,
+          notification_interval: notificationInterval * 60 - 1,
           created_at: new Date().toISOString(),
         },
         {
@@ -224,7 +224,7 @@ export default function MenuKata() {
 
             <div className="mb-4">
               <label className="block mb-2 text-gray-700">
-                Atur notifikasi setiap (menit):
+                Atur notifikasi setiap (jam):
               </label>
               <input
                 type="number"
