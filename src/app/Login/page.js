@@ -25,6 +25,7 @@ export default function Login() {
   };
 
   // Fungsi untuk meng-handle pengiriman formulir
+  // Fungsi untuk meng-handle pengiriman formulir
   const handleSubmit = async (e) => {
     e.preventDefault(); // Mencegah reload halaman
 
@@ -40,12 +41,16 @@ export default function Login() {
       // Log seluruh response.data untuk melihat strukturnya
       console.log("Response Data:", response.data);
 
-      // Simpan token dan userID di cookie jika ada
+      // Simpan token, userID, email, dan username di cookie jika ada
       if (response.data.token) {
         Cookies.set("token", response.data.token, { expires: 7 }); // Set cookie dengan durasi 7 hari
-        // Menyimpan user ID dari respons
+
+        // Menyimpan user ID dan username dari respons
         const userID = response.data.user.id; // Mengambil user ID
+        const username = response.data.user.username; // Mengambil username
         Cookies.set("userID", userID, { expires: 7 }); // Set cookie dengan durasi 7 hari
+        Cookies.set("email", email, { expires: 7 }); // Simpan email ke cookie
+        Cookies.set("username", username, { expires: 7 }); // Simpan username ke cookie
       } else {
         console.error("Token tidak tersedia dalam respons.");
       }

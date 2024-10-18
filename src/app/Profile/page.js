@@ -22,32 +22,51 @@ export default function Profile() {
     if (!token) {
       router.push("/Login");
     } else {
-      // Fetch data pengguna dari API
-      const fetchUserData = async () => {
-        try {
-          const response = await fetch("https://be-psi.up.railway.app/users", {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`, // Sertakan token untuk otorisasi
-            },
-          });
-          const data = await response.json();
+      // Ambil nama dan email dari cookies
+      const savedName = Cookies.get("username");
+      const savedEmail = Cookies.get("email");
 
-          // Pastikan data adalah array dan ambil elemen pertama
-          if (Array.isArray(data) && data.length > 0) {
-            setName(data[0].username); // Atur nama pengguna
-            setEmail(data[0].email); // Atur email
-          } else {
-            throw new Error("Data tidak ditemukan.");
+      if (savedName && savedEmail) {
+        setName(savedName);
+        setEmail(savedEmail);
+      } else {
+        // Jika nama dan email tidak ada di cookies, lakukan fetch data pengguna
+        const fetchUserData = async () => {
+          try {
+            const response = await fetch(
+              "https://be-psi.up.railway.app/users",
+              {
+                method: "GET",
+                headers: {
+                  Authorization: `Bearer ${token}`, // Sertakan token untuk otorisasi
+                },
+              }
+            );
+            const data = await response.json();
+
+            if (Array.isArray(data) && data.length > 0) {
+              const userName = data[0].username;
+              const userEmail = data[0].email;
+
+              // Simpan nama dan email ke dalam cookies agar bisa diambil nanti
+              Cookies.set("name", userName);
+              Cookies.set("email", userEmail);
+
+              setName(userName);
+              setEmail(userEmail);
+            } else {
+              throw new Error("Data tidak ditemukan.");
+            }
+          } catch (error) {
+            console.error("Error fetching user data:", error);
+            router.push("/Login"); // Jika ada kesalahan, arahkan ke login
           }
-          setIsLoading(false); // Set loading ke false setelah data diambil
-        } catch (error) {
-          console.error("Error fetching user data:", error);
-          router.push("/Login"); // Jika ada kesalahan, arahkan ke login
-        }
-      };
+        };
 
-      fetchUserData();
+        fetchUserData();
+      }
+
+      setIsLoading(false); // Set loading ke false setelah data diambil
     }
   }, [router]);
 
@@ -123,14 +142,16 @@ export default function Profile() {
             <label className="font-semibold mb-1" htmlFor="name">
               Nama:
             </label>
-            <span>{name}</span>
+            <span>{Cookies.get("username")}</span>{" "}
+            {/* Ambil data nama dari cookies */}
           </div>
 
           <div className="flex flex-col">
             <label className="font-semibold mb-1" htmlFor="email">
               Email:
             </label>
-            <span>{email}</span>
+            <span>{Cookies.get("email")}</span>{" "}
+            {/* Ambil data email dari cookies */}
           </div>
         </div>
 
