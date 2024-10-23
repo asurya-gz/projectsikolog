@@ -104,7 +104,7 @@ export default function MenuKata() {
         {
           user_id: userID,
           affirmation_id: affirmationID,
-          notification_interval: notificationInterval * 60 - 1,
+          notification_interval: notificationInterval - 1,
           created_at: new Date().toISOString(),
         },
         {
@@ -224,7 +224,7 @@ export default function MenuKata() {
                 <button
                   onClick={() => handleIntervalSelect(24)}
                   className={`py-2 px-4 rounded-md ${
-                    selectedInterval === 24
+                    selectedInterval === 1440
                       ? "bg-yellow-500 text-white"
                       : "bg-gray-200 text-gray-700"
                   } hover:bg-yellow-400 transition duration-200`}
@@ -234,7 +234,7 @@ export default function MenuKata() {
                 <button
                   onClick={() => handleIntervalSelect(72)}
                   className={`py-2 px-4 rounded-md ${
-                    selectedInterval === 72
+                    selectedInterval === 4320
                       ? "bg-yellow-500 text-white"
                       : "bg-gray-200 text-gray-700"
                   } hover:bg-yellow-400 transition duration-200`}
@@ -244,7 +244,7 @@ export default function MenuKata() {
                 <button
                   onClick={() => handleIntervalSelect(168)}
                   className={`py-2 px-4 rounded-md ${
-                    selectedInterval === 168
+                    selectedInterval === 10080
                       ? "bg-yellow-500 text-white"
                       : "bg-gray-200 text-gray-700"
                   } hover:bg-yellow-400 transition duration-200`}
@@ -253,7 +253,7 @@ export default function MenuKata() {
                 </button>
               </div>
               <label className="block mb-2 text-gray-700">
-                Atur notifikasi setiap (jam):
+                Atur notifikasi setiap (menit):
               </label>
               <input
                 type="number"
