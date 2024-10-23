@@ -222,7 +222,7 @@ export default function MenuKata() {
               </label>
               <div className="flex space-x-4 mb-2">
                 <button
-                  onClick={() => handleIntervalSelect(24)}
+                  onClick={() => handleIntervalSelect(1440)}
                   className={`py-2 px-4 rounded-md ${
                     selectedInterval === 1440
                       ? "bg-yellow-500 text-white"
@@ -232,7 +232,7 @@ export default function MenuKata() {
                   1 Hari
                 </button>
                 <button
-                  onClick={() => handleIntervalSelect(72)}
+                  onClick={() => handleIntervalSelect(4320)}
                   className={`py-2 px-4 rounded-md ${
                     selectedInterval === 4320
                       ? "bg-yellow-500 text-white"
@@ -242,7 +242,7 @@ export default function MenuKata() {
                   3 Hari
                 </button>
                 <button
-                  onClick={() => handleIntervalSelect(168)}
+                  onClick={() => handleIntervalSelect(10080)}
                   className={`py-2 px-4 rounded-md ${
                     selectedInterval === 10080
                       ? "bg-yellow-500 text-white"
