@@ -216,18 +216,6 @@ export default function MenuKata() {
               {affirmations[selectedTopic].description}
             </p>
 
-            <ul className="list-disc list-inside space-y-2 mb-4">
-              {affirmations[selectedTopic].quotes.length > 0 ? (
-                affirmations[selectedTopic].quotes.map((quote, index) => (
-                  <li key={index} className="text-gray-700">
-                    {quote}
-                  </li>
-                ))
-              ) : (
-                <li className="text-gray-700">Tidak ada kutipan tersedia.</li>
-              )}
-            </ul>
-
             <div className="mb-4">
               <label className="block mb-2 text-gray-700">
                 Pilih interval notifikasi:
